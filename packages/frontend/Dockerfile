@@ -28,7 +28,6 @@ COPY packages/frontend/vite.config.ts ./packages/frontend/
 COPY packages/shared/src ./packages/shared/src
 COPY packages/shared/package.json ./packages/shared/
 COPY packages/shared/tsconfig.json ./packages/shared/
-COPY packages/backend/tsconfig.json ./packages/backend/tsconfig.json
 
 WORKDIR /app/packages/shared
 RUN pnpm run build
