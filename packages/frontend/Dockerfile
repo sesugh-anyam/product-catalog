@@ -43,6 +43,7 @@ WORKDIR /app/packages/frontend
 
 COPY --from=builder /app/packages/frontend/dist ./dist
 COPY --from=builder /app/packages/frontend/package.json ./package.json
+COPY --from=builder /app/packages/frontend/vite.config.ts ./vite.config.ts
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/packages/frontend/node_modules ./node_modules
 
