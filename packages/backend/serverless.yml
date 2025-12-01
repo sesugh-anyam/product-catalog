@@ -1,0 +1,239 @@
+service: product-catalog-api
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'}
+  region: eu-west-2
+  environment:
+    MONGODB_URI: ${env:MONGODB_URI}
+    JWT_SECRET: ${env:JWT_SECRET}
+    NODE_ENV: ${env:NODE_ENV, 'development'}
+    S3_BUCKET_NAME: ${env:S3_BUCKET_NAME, 'product-catalog-images-dev'}
+    S3_REGION: ${env:S3_REGION, 'eu-west-2'}
+    S3_ACCESS_KEY_ID: ${env:S3_ACCESS_KEY_ID}
+    S3_SECRET_ACCESS_KEY: ${env:S3_SECRET_ACCESS_KEY}
+    SMTP_HOST: ${env:SMTP_HOST}
+    SMTP_PORT: ${env:SMTP_PORT, '587'}
+    SMTP_SECURE: ${env:SMTP_SECURE, 'false'}
+    SMTP_USER: ${env:SMTP_USER}
+    SMTP_PASS: ${env:SMTP_PASS}
+    SMTP_FROM: ${env:SMTP_FROM}
+    FRONTEND_URL: ${env:FRONTEND_URL, 'http://localhost:5173'}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:PutObjectAcl
+            - s3:GetObject
+          Resource: 'arn:aws:s3:::${env:S3_BUCKET_NAME, "product-catalog-images-dev"}/*'
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-esbuild
+  - serverless-offline
+
+functions:
+  # Auth functions
+  login:
+    handler: src/handlers/auth.login
+    events:
+      - http:
+          path: auth/login
+          method: post
+          cors: true
+
+  register:
+    handler: src/handlers/auth.register
+    events:
+      - http:
+          path: auth/register
+          method: post
+          cors: true
+
+  verifyOtp:
+    handler: src/handlers/auth.verifyOtp
+    events:
+      - http:
+          path: auth/verify-otp
+          method: post
+          cors: true
+
+  resendOtp:
+    handler: src/handlers/auth.resendOtp
+    events:
+      - http:
+          path: auth/resend-otp
+          method: post
+          cors: true
+
+  me:
+    handler: src/handlers/auth.me
+    events:
+      - http:
+          path: auth/me
+          method: get
+          cors: true
+
+  forgotPassword:
+    handler: src/handlers/auth.forgotPassword
+    events:
+      - http:
+          path: auth/forgot-password
+          method: post
+          cors: true
+
+  verifyResetToken:
+    handler: src/handlers/auth.verifyResetToken
+    events:
+      - http:
+          path: auth/verify-reset-token
+          method: post
+          cors: true
+
+  resetPassword:
+    handler: src/handlers/auth.resetPassword
+    events:
+      - http:
+          path: auth/reset-password
+          method: post
+          cors: true
+
+  # Product functions
+  listProducts:
+    handler: src/handlers/products.list
+    events:
+      - http:
+          path: products
+          method: get
+          cors: true
+
+  createProduct:
+    handler: src/handlers/products.create
+    events:
+      - http:
+          path: products
+          method: post
+          cors: true
+
+  getProduct:
+    handler: src/handlers/products.get
+    events:
+      - http:
+          path: products/{id}
+          method: get
+          cors: true
+
+  updateProduct:
+    handler: src/handlers/products.update
+    events:
+      - http:
+          path: products/{id}
+          method: put
+          cors: true
+
+  deleteProduct:
+    handler: src/handlers/products.delete
+    events:
+      - http:
+          path: products/{id}
+          method: delete
+          cors: true
+
+  getLowStock:
+    handler: src/handlers/inventory.getLowStock
+    events:
+      - http:
+          path: inventory/low-stock
+          method: get
+          cors: true
+
+  # Category functions
+  listCategories:
+    handler: src/handlers/categories.list
+    events:
+      - http:
+          path: categories
+          method: get
+          cors: true
+
+  createCategory:
+    handler: src/handlers/categories.create
+    events:
+      - http:
+          path: categories
+          method: post
+          cors: true
+
+  getCategory:
+    handler: src/handlers/categories.get
+    events:
+      - http:
+          path: categories/{id}
+          method: get
+          cors: true
+
+  updateCategory:
+    handler: src/handlers/categories.update
+    events:
+      - http:
+          path: categories/{id}
+          method: put
+          cors: true
+
+  deleteCategory:
+    handler: src/handlers/categories.delete
+    events:
+      - http:
+          path: categories/{id}
+          method: delete
+          cors: true
+
+  # Inventory functions
+  updateStock:
+    handler: src/handlers/inventory.updateStock
+    events:
+      - http:
+          path: inventory/update
+          method: post
+          cors: true
+
+  getStockHistory:
+    handler: src/handlers/inventory.getStockHistory
+    events:
+      - http:
+          path: inventory/history/{productId}
+          method: get
+          cors: true
+
+  # Upload functions
+  getUploadUrl:
+    handler: src/handlers/upload.getUploadUrl
+    events:
+      - http:
+          path: upload/url
+          method: post
+          cors: true
+
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    exclude:
+      - aws-sdk
+    target: node20
+    platform: node
+    concurrency: 10
+  serverless-offline:
+    httpPort: 3000

@@ -1,0 +1,24 @@
+{
+  "name": "product-catalog",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Simple Product Catalog - Fullstack Application",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "type-check": "pnpm -r type-check",
+    "clean": "pnpm -r clean"
+  },
+  "keywords": [
+    "product-catalog",
+    "fullstack",
+    "serverless"
+  ],
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}

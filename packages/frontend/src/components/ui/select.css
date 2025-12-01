@@ -1,0 +1,30 @@
+/* Select component dark mode support */
+.chakra-ui-select {
+  --select-bg: var(--chakra-colors-white);
+  --select-color: var(--chakra-colors-gray-800);
+  --select-border: var(--chakra-colors-border);
+  --select-border-hover: var(--chakra-colors-gray-400);
+}
+
+[data-theme="dark"] .chakra-ui-select,
+.dark .chakra-ui-select {
+  --select-bg: var(--chakra-colors-gray-800);
+  --select-color: var(--chakra-colors-gray-100);
+  --select-border: var(--chakra-colors-gray-600);
+  --select-border-hover: var(--chakra-colors-gray-500);
+}
+
+.chakra-ui-select select {
+  background-color: var(--select-bg);
+  color: var(--select-color);
+  border-color: var(--select-border);
+}
+
+.chakra-ui-select select:hover {
+  border-color: var(--select-border-hover);
+}
+
+.chakra-ui-select select option {
+  background-color: var(--select-bg);
+  color: var(--select-color);
+}
